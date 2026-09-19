@@ -2,6 +2,7 @@ from app.db import connect
 from app.engines.route_quote import quote_route
 from app.repositories import edges as edges_repo
 from app.repositories import fare_rules as rules_repo
+from app.repositories import flat_fares as flat_repo
 from app.repositories import runs as runs_repo
 from app.repositories import settings as settings_repo
 from app.repositories import stations as stations_repo
@@ -32,13 +33,23 @@ class MetroService:
     def fare_rules(self):
         return rules_repo.list_ordered(self._conn)
 
+    def flat_fares(self):
+        return flat_repo.list_all(self._conn)
+
+    def add_flat_fare(self, start: str, end: str, price: float):
+        return flat_repo.insert(self._conn, start, end, price)
+
+    def delete_flat_fare(self, flat_id: int):
+        return flat_repo.delete(self._conn, flat_id)
+
     def settings(self):
         return settings_repo.get_map(self._conn)
 
     def quote(self, start: str, end: str, persist: bool):
         edges = edges_repo.list_pairs(self._conn)
         rules = rules_repo.as_calc_rules(self._conn)
-        result = quote_route(edges, start, end, rules)
+        flats = flat_repo.as_price_map(self._conn)
+        result = quote_route(edges, start, end, rules, flats)
         run_id = None
         if persist and result.get("reachable"):
             run_id = runs_repo.insert(self._conn, "quote", {"start": start, "end": end}, result)
