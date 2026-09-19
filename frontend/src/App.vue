@@ -10,6 +10,7 @@
       <router-link to="/stations">站点</router-link>
       <router-link to="/planner">票价试算</router-link>
       <router-link to="/fares">规则</router-link>
+      <router-link to="/flat-fares">一口价</router-link>
       <router-link to="/network">邻接</router-link>
       <router-link to="/history">记录</router-link>
       <router-link to="/settings">设置</router-link>

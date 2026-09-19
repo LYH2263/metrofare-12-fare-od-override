@@ -5,3 +5,9 @@ class QuoteRequest(BaseModel):
     start: str
     end: str
     persist: bool = True
+
+
+class FlatFareRequest(BaseModel):
+    start: str
+    end: str
+    price: float
